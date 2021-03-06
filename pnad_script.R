@@ -94,6 +94,26 @@ pnadc_categorias %>%
   labs(title = "Distribuição percentual do desalento por faixa etária", fill = "Cor",
        x = "Faixa etária", y = "Porcentagem")
 
+#Deixando interativo!
+p <- pnadc_categorias %>% 
+  filter(desalento != "NA") %>% 
+  count(faixa.idade, cor, sort = TRUE) %>%
+  mutate(faixa.idade = fct_reorder(faixa.idade, n)) %>% 
+  ggplot(aes(x = faixa.idade, y = n/sum(n) , fill = cor)) +
+  geom_bar(aes(text = paste0(round(n/sum(n), digits = 2), "%",
+                              "<br>Cor: ", cor)), stat = "identity") +
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal() +
+  scale_fill_viridis_d() +
+  labs(title = "Distribuição percentual do desalento por faixa etária", fill = "Cor",
+       x = "Faixa etária", y = "Porcentagem")
+
+
+library(plotly)
+ggplotly(p, tooltip = "text") 
+
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ======== Gráfico 3 ========
